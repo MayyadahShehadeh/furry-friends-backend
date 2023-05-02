@@ -43,10 +43,10 @@ function seedCat() {
 
 // --------------------------------------------- CRUD -------------------
 app.get('/choosenCatt', getcatnameHandler);
-
+app.get('/getAllCats', getDbCatHandler2);
 app.get('/dbCat', getDbCatHandler);
 app.post('/addNewCat', addNewCatHandler);
-app.get('/getAllCats', getDbCatHandler2);
+app.put('/updateCatData/:catId', updateCatHandler);
 app.delete('/deleteCat/:catId', deleteCat);
 
 function getcatnameHandler(req, res) {
@@ -62,7 +62,7 @@ function getcatnameHandler(req, res) {
         console.log(data);
         res.send(data)
     } }) }
-    
+
 // -------------- to get all data in the db even after logout --------------
 function getDbCatHandler2(req, res) {
     catModel.find({}).then((data, error) => {
@@ -81,7 +81,6 @@ function getDbCatHandler(req, res) {
 }
 async function addNewCatHandler(req, res) {
     let { userEmail, catName, catLength, catImg } = req.body;
-
     const newCat = new catModel({
         userEmail: userEmail,
         catName: catName,
@@ -89,14 +88,34 @@ async function addNewCatHandler(req, res) {
         catImg: catImg,
     })
     await newCat.save();
-
     catModel.find({ userEmail: userEmail }).then(data => {
         console.log(data);
         res.send(data)
-
     })
 }
 
+function updateCatHandler(req, res) {
+    let { userEmail, catName, catLength, catImg } = req.body;
+  
+    let catID = req.params.catId;
+  
+    catModel.findOne({ _id: catID }).then(data => {
+      data.userEmail = userEmail;
+      data.catName = catName;
+      data.catLength = catLength;
+      data.catImg = catImg;
+      console.log(data);
+  
+      data.save().then(()=> {
+        catModel.find({ userEmail }).then(data => {
+          console.log(data);
+          res.send(data)
+        })
+      }).catch(error =>{
+        console.log(error);
+      })
+      })
+  }
 // ------------------------ to delete cat from db ----------------
 function deleteCat(req, res) {
     console.log(req.params);
