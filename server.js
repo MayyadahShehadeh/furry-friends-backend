@@ -6,7 +6,7 @@ const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
 
-const { getCatsHandler, getCatsBreedsHandler } = require('./modules/GetCats');
+const { getCatsHandler, getCatsBreedsHandler, getCatsHandler22,getCatsDesHandler} = require('./modules/GetCats');
 const getCatOwnerHandler = require('./modules/CatOwnerRandom');
 app.use(cors());
 app.use(express.json());
@@ -136,8 +136,10 @@ app.get('/', (req, res) => {
     res.send('alive!!!!');
 })
 // http://localhost:3001/getCats?breedQuery=abys
+app.get('/getCats2', getCatsHandler22);
 app.get('/getCats', getCatsHandler);
 app.get('/getCatsBreed', getCatsBreedsHandler);
 app.get('/getCatOwner', getCatOwnerHandler);
+app.get('/getCatsDes', getCatsDesHandler);
 
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
