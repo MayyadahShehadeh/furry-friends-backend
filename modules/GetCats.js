@@ -43,7 +43,7 @@ function getCatsHandler22 (req,res) {
 
     axios.request(options).then(response => {
         let catsData = response.data.map(item => {
-            // console.log(item);
+            console.log(item);
             return new catObj (item);
         })
         res.json(catsData)
@@ -105,7 +105,8 @@ constructor(item){
     this.catName = item.name,
     this.catLength = item.length,
     this.catImg = item.image_link,
-    this.catWieght = `${item.min_weight} - ${item.max_weight}`
+    this.catWieght = `${item.min_weight} - ${item.max_weight}`,
+    this.origin = item.origin
 }
 
 }
