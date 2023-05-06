@@ -20,17 +20,23 @@ mongoose.connect(mongoLink, {
 });
 
 const catSchema = new mongoose.Schema({
+    userName:String,
     userEmail: String,
+    userPhone:Number,
     catName: String,
     catLength: String,
     catImg: String,
+    origin: String,
     catWieght: String,
+
 })
 
 const catModel = mongoose.model('catData', catSchema);
 
 function seedCat() {
     const cat1 = new catModel({
+        userName:'mayadah',
+        userPhone:parseInt('0782465514'),
         userEmail: 'miss.mayadah5@gmail.com',
         catName: 'soso',
         catLength: 'meduim',
@@ -72,20 +78,26 @@ function getDbCatHandler2(req, res) {
 
 function getDbCatHandler(req, res) {
     let personEmail = req.query.userEmail;
+    let personName = req.query.userName;
 
-    catModel.find({ userEmail: personEmail }).then(data => {
+    catModel.find({ userEmail: personEmail, userName:personName }).then(data => {
         console.log(data);
         res.send(data)
 
     })
 }
 async function addNewCatHandler(req, res) {
-    let { userEmail, catName, catLength, catImg } = req.body;
+    let { userEmail, catName, catLength, catImg, userName,userPhone,origin ,catWieght} = req.body;
     const newCat = new catModel({
+        userName:userName,
         userEmail: userEmail,
+        userPhone:userPhone,
         catName: catName,
         catLength: catLength,
         catImg: catImg,
+        origin:origin,
+        catWieght:catWieght
+
     })
     await newCat.save();
     catModel.find({ userEmail: userEmail }).then(data => {
@@ -95,15 +107,19 @@ async function addNewCatHandler(req, res) {
 }
 
 function updateCatHandler(req, res) {
-    let { userEmail, catName, catLength, catImg } = req.body;
+    let { userEmail, catName, catLength, catImg, userPhone, origin,catWieght } = req.body;
   
     let catID = req.params.catId;
   
     catModel.findOne({ _id: catID }).then(data => {
+        data.userPhone = userPhone;
       data.userEmail = userEmail;
       data.catName = catName;
       data.catLength = catLength;
       data.catImg = catImg;
+      data.origin = origin;
+      data.catWieght = catWieght;
+
       console.log(data);
   
       data.save().then(()=> {
